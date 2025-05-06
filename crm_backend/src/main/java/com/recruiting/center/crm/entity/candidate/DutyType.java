@@ -16,7 +16,7 @@ public class DutyType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "status", length = 128, nullable = false)
+    @Column(name = "status", length = 128, nullable = false, unique = true)
     private String status;
     @Column(name = "color")
     private String color;

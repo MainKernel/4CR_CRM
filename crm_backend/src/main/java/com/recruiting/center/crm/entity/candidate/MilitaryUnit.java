@@ -16,7 +16,7 @@ public class MilitaryUnit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name="unit_name")
+    @Column(name="unit_name", nullable = false, unique = true)
     private String unitName;
     @Column(name = "comment")
     private String comment;

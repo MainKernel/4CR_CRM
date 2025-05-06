@@ -1,6 +1,7 @@
 package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,10 @@ public class PsychologicalTest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "status")
+    @NotBlank
+    @Column(name = "status", unique = true, nullable = false)
     private String status;
-    @Column(name = "color")
+    @NotBlank
+    @Column(name = "color", nullable = false)
     private String color;
 }

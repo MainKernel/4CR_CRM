@@ -4,12 +4,14 @@ import com.recruiting.center.crm.entity.candidate.Candidate;
 import com.recruiting.center.crm.repository.candidate.CandidatePagingRepository;
 import com.recruiting.center.crm.repository.candidate.CandidateRepository;
 import com.recruiting.center.crm.service.servicexceptions.CandidateNotFoundException;
+import com.recruiting.center.crm.service.servicexceptions.DataIntegrityConflictException;
 import com.recruiting.center.crm.utils.phone.PhoneValidationService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,31 +30,41 @@ public class CandidateService {
     private final CandidatePagingRepository candidatePagingRepository;
     private final PhoneValidationService phoneValidationService;
 
-    /** Find candidates by specified role
+    /**
+     * Find candidates by specified role
+     *
      * @param repositoryMethod repository method to execute
-     * @param role human-readable role name for logging
-     * @param roleName actual value to search for
+     * @param role             human-readable role name for logging
+     * @param roleName         actual value to search for
      * @return unmodifiable list of candidates or empty list if candidates not found
      */
     private List<Candidate> findCandidates(Supplier<List<Candidate>> repositoryMethod, String role, String roleName) {
         List<Candidate> candidates = repositoryMethod.get();
 
         if (candidates.isEmpty()) {
-            log.warn("Candidates with {} {} not found", role, roleName);
+            log.warn("CandidateService: Candidates with {} {} not found", role, roleName);
         } else {
-            log.debug("Found {} candidates with {} {}", candidates.size(), role, roleName);
+            log.debug("CandidateService: Found {} candidates with {} {}", candidates.size(), role, roleName);
         }
 
         return Collections.unmodifiableList(candidates);
     }
 
-    private Page<Candidate> findCandidatesPage(Supplier<Page<Candidate>> pagingRepositoryMethod, String role, String roleName){
+    /**
+     * Find candidates by specified role
+     *
+     * @param pagingRepositoryMethod repository method to execute
+     * @param role                   human-readable role name for logging
+     * @param roleName               actual value to search for
+     * @return page of candidates
+     */
+    private Page<Candidate> findCandidatesPage(Supplier<Page<Candidate>> pagingRepositoryMethod, String role, String roleName) {
         Page<Candidate> candidates = pagingRepositoryMethod.get();
 
-        if(candidates.isEmpty()){
-            log.warn("Candidates page with {} {} not found", role, roleName);
+        if (candidates.isEmpty()) {
+            log.warn("CandidateService: Candidates page with {} {} not found", role, roleName);
         } else {
-            log.debug("Candidates page found {} with {} {}", candidates.getTotalElements(),role, roleName);
+            log.debug("CandidateService: Candidates page found {} with {} {}", candidates.getTotalElements(), role, roleName);
         }
         return candidates;
     }
@@ -82,7 +94,7 @@ public class CandidateService {
         );
     }
 
-    public List<Candidate> findByCurator(String curator) {
+    public List<Candidate> findByCurator(@NotBlank String curator) {
         return findCandidates(
                 () -> candidateRepository.findCandidateByCurator(curator),
                 "curator",
@@ -98,7 +110,7 @@ public class CandidateService {
         );
     }
 
-    public List<Candidate> findByRecommendationLetterDate(LocalDate date) {
+    public List<Candidate> findByRecommendationLetterDate(@NotBlank LocalDate date) {
         return findCandidates(
                 () -> candidateRepository.findCandidateByRecommendationLetter(date),
                 "date",
@@ -106,7 +118,68 @@ public class CandidateService {
         );
     }
 
-    public Page<Candidate> findPageByRecruiterId(Long id, Pageable pageable){
-        return candidatePagingRepository.findAllByRecruiterId(id, pageable);
+    public Page<Candidate> findPageByRecruiterId(Long id, Pageable pageable) {
+
+        Page<Candidate> allByRecruiterId = candidatePagingRepository.findAllByRecruiterId(id, pageable);
+
+        if (allByRecruiterId.isEmpty()) {
+            log.warn("CandidateService: There is no candidates found with recruiter id {}", id);
+        } else {
+            log.debug("CandidateService: There is {} candidates found for recruiter with id {}", allByRecruiterId.getTotalElements(), id);
+        }
+
+        return allByRecruiterId;
+    }
+
+    public Page<Candidate> findPageByCurator(@NotBlank String curator, Pageable pageable) {
+        return findCandidatesPage(() -> candidatePagingRepository.findAllByCurator(curator, pageable),
+                "curator",
+                curator
+        );
+    }
+
+    public Page<Candidate> findPageByRecommendationLetter(@NotBlank LocalDate date, Pageable pageable) {
+        return findCandidatesPage(() -> candidatePagingRepository.findAllByRecommendationLetter(date, pageable),
+                "date",
+                date.toString()
+        );
+    }
+
+    public Page<Candidate> findPageByEscortedBy(@NotBlank String escortedBy, Pageable pageable) {
+        return findCandidatesPage(() -> candidatePagingRepository.findAllByEscortedBy(escortedBy, pageable),
+                "escorted by",
+                escortedBy
+        );
+    }
+
+    public Page<Candidate> findPageByPhoneNumber(@NotBlank String phoneNumber, Pageable pageable) {
+        return findCandidatesPage(() -> candidatePagingRepository.findAllByPhoneNumber(phoneNumber, pageable),
+                "phone number",
+                phoneNumber
+        );
+    }
+
+    public void deleteCandidate(@Valid Candidate candidate) {
+        if (!candidateRepository.existsById(candidate.getId())) {
+            log.warn("CandidateService: Attempt to delete non existing candidate");
+            throw new IllegalArgumentException("Attempt to delete non existing candidate");
+        }
+        try {
+            candidateRepository.delete(candidate);
+            log.debug("CandidateService: Candidate with id {} was deleted", candidate.getId());
+        } catch (DataIntegrityViolationException ex) {
+            log.error("CandidateService: Error occurred due to candidate deletion with id {}", candidate.getId());
+            throw new DataIntegrityConflictException("CandidateService: Error occurred due to candidate deletion", ex);
+        }
+    }
+
+    public void addCandidate(@Valid Candidate candidate) {
+        try {
+            candidateRepository.save(candidate);
+            log.debug("CandidateService: Candidate successfully saved");
+        } catch (DataIntegrityViolationException ex) {
+            log.error("CandidateService: Error occurred due to candidate saving");
+            throw new DataIntegrityConflictException("CandidateService: Error occurred due to candidate saving", ex);
+        }
     }
 }

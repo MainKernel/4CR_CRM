@@ -1,22 +1,22 @@
 CREATE TABLE candidate_status(
     id SERIAL PRIMARY KEY,
-    status VARCHAR(128) NOT NULL,
+    status VARCHAR(128) NOT NULL UNIQUE,
     color VARCHAR(20) NOT NULL
 
 );
 CREATE TABLE duty_type(
     id SERIAL PRIMARY KEY,
-    status VARCHAR(128) NOT NULL,
+    status VARCHAR(128) NOT NULL UNIQUE,
     color VARCHAR(20) NOT NULL
 );
 CREATE TABLE psychological_test(
     id SERIAL PRIMARY KEY,
-    status VARCHAR(128) NOT NULL,
+    status VARCHAR(128) NOT NULL UNIQUE,
     color VARCHAR(20) NOT NULL
 );
 CREATE TABLE military_unit (
     id SERIAL PRIMARY KEY,
-    unit_name VARCHAR(500) NULL NULL,
+    unit_name VARCHAR(500) NULL NULL UNIQUE,
     comment VARCHAR(128)
 );
 CREATE TABLE candidates (

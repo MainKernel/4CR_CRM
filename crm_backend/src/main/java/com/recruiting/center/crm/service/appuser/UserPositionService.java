@@ -20,4 +20,8 @@ public class UserPositionService {
         });
     }
 
+    public void save(UserPosition userPosition){
+
+    }
+
 }
