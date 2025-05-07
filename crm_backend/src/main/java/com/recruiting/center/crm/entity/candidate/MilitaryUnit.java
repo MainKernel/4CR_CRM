@@ -18,6 +18,8 @@ public class MilitaryUnit {
     private long id;
     @Column(name="unit_name", nullable = false, unique = true)
     private String unitName;
+    @Column(name = "strict_unit_name", nullable = false, unique = true)
+    private String strictUnitName;
     @Column(name = "comment")
     private String comment;
 }

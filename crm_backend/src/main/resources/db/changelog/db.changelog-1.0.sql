@@ -17,6 +17,7 @@ CREATE TABLE psychological_test(
 CREATE TABLE military_unit (
     id SERIAL PRIMARY KEY,
     unit_name VARCHAR(500) NULL NULL UNIQUE,
+    strict_unit_name VARCHAR(500) NULL NULL UNIQUE,
     comment VARCHAR(128)
 );
 CREATE TABLE candidates (

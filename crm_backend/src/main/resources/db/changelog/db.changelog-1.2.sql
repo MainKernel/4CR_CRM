@@ -23,8 +23,8 @@ INSERT INTO psychological_test (status, color) VALUES ('Не пройшов те
 INSERT INTO psychological_test (status, color) VALUES ('Результати отримано', '00DA00' );
 
 -- Вставки в military_unit
-INSERT INTO military_unit (unit_name, comment) VALUES ('Військова частина А1234', 'Передано до Морської піхоти');
-INSERT INTO military_unit (unit_name, comment) VALUES ('Військова частина A5678', 'Пріоритетна частина | Контракти 18-24');
+INSERT INTO military_unit (unit_name, strict_unit_name, comment) VALUES ('Військова частина А1234' , '110 ОБр', 'Передано до Морської піхоти');
+INSERT INTO military_unit (unit_name, comment) VALUES ('Військова частина A5678', '211 ОБр', 'Пріоритетна частина | Контракти 18-24');
 
 -- Вставки в candidates
 INSERT INTO candidates (
