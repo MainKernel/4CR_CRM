@@ -15,7 +15,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PsychologicalTest {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "psychological_test_id_seq")
+    @SequenceGenerator(
+            name = "psychological_test_id_seq",
+            sequenceName = "psychological_test_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @NotBlank
     @Column(name = "status", unique = true, nullable = false)

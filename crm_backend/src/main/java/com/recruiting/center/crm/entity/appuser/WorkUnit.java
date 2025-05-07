@@ -15,7 +15,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class WorkUnit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "work_unit_id_seq")
+    @SequenceGenerator(
+            name = "work_unit_id_seq",
+            sequenceName = "work_unit_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name = "unit_name")
     @NotBlank

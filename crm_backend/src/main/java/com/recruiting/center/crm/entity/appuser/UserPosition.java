@@ -14,7 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserPosition {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_position_id_seq")
+    @SequenceGenerator(
+            name = "user_position_id_seq",
+            sequenceName = "user_position_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name = "unit_position")
     private String unitPosition;

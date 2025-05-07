@@ -16,7 +16,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CandidateStatus {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_status_id_seq")
+    @SequenceGenerator(
+            name = "candidate_status_id_seq",
+            sequenceName = "candidate_status_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @NotBlank
     @Column(name = "status", length = 128, nullable = false, unique = true)

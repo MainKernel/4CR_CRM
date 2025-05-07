@@ -17,7 +17,12 @@ import java.util.List;
 @Builder
 public class Candidate {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_id_seq")
+    @SequenceGenerator(
+            name = "candidate_id_seq",
+            sequenceName = "candidate_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name = "surname", nullable = false, length = 128)
     private String surname;

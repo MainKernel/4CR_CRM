@@ -16,7 +16,12 @@ import java.time.LocalDate;
 @Builder
 public class CandidateComment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "candidate_comments_seq",
+            sequenceName = "candidate_comments_id_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "candidate_comments_seq")
     private long id;
     private LocalDate commentDate;
     private String commentedBy;

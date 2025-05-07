@@ -18,7 +18,12 @@ import java.time.LocalDate;
 @Builder
 public class CandidateDocument {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_documents_id_seq")
+    @SequenceGenerator(
+            name = "candidate_documents_id_seq",
+            sequenceName = "candidate_documents_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name="file_name")
     private String fileName;

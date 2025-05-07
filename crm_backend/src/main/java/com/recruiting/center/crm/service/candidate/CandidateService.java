@@ -118,14 +118,14 @@ public class CandidateService {
         );
     }
 
-    public Page<Candidate> findPageByRecruiterId(Long id, Pageable pageable) {
+    public Page<Candidate> findPageByRecruiterId(String recruiter, Pageable pageable) {
 
-        Page<Candidate> allByRecruiterId = candidatePagingRepository.findAllByRecruiterId(id, pageable);
+        Page<Candidate> allByRecruiterId = candidatePagingRepository.findAllByRecruiter(recruiter, pageable);
 
         if (allByRecruiterId.isEmpty()) {
-            log.warn("CandidateService: There is no candidates found with recruiter id {}", id);
+            log.warn("CandidateService: There is no candidates found with recruiter id {}", recruiter);
         } else {
-            log.debug("CandidateService: There is {} candidates found for recruiter with id {}", allByRecruiterId.getTotalElements(), id);
+            log.debug("CandidateService: There is {} candidates found for recruiter with id {}", allByRecruiterId.getTotalElements(), recruiter);
         }
 
         return allByRecruiterId;

@@ -14,7 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MilitaryUnit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "military_unit_id_seq")
+    @SequenceGenerator(
+            name = "military_unit_id_seq",
+            sequenceName = "military_unit_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name="unit_name", nullable = false, unique = true)
     private String unitName;

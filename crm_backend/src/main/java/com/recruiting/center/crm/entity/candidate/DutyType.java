@@ -14,7 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DutyType {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "duty_type_id_seq")
+    @SequenceGenerator(
+            name = "duty_type_id_seq",
+            sequenceName = "duty_type_id_seq",
+            allocationSize = 1
+    )
     private long id;
     @Column(name = "status", length = 128, nullable = false, unique = true)
     private String status;
