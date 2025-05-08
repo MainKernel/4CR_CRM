@@ -1,10 +1,8 @@
 package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,8 +56,8 @@ public class Candidate {
     private String orderNumber;
     @Column(name = "territory_center_record")
     private String territoryCenterRecord;
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CandidateComment> comments;
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL,orphanRemoval = true,  fetch = FetchType.EAGER)
     private List<CandidateDocument> documents;
 }

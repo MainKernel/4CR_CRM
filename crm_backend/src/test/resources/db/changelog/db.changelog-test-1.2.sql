@@ -63,9 +63,9 @@ SELECT setval('user_position_id_seq', 104);
 
 -- Додавання тестових користувачів з початковим id=100
 INSERT INTO app_user (id, first_name, second_name, work_unit_id, user_position_id, username, password, role, is_account_non_expired, is_account_non_locked, is_credentials_non_expired) VALUES
-(100, 'Олександр', 'Петренко', 100, 100, 'admin', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'ROLE_ADMIN', true, true, true),
-(101, 'Марія', 'Іванова', 103, 103, 'recruiter', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'ROLE_USER', true, true, true),
-(102, 'Василь', 'Сидоренко', 101, 102, 'user', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'ROLE_USER', true, true, true);
+(100, 'Олександр', 'Петренко', 100, 100, 'admin', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'ADMIN', true, true, true),
+(101, 'Марія', 'Іванова', 103, 103, 'recruiter', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'USER', true, true, true),
+(102, 'Василь', 'Сидоренко', 101, 102, 'user', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'USER', true, true, true);
 -- Змінюємо послідовність для автоінкременту
 SELECT setval('app_user_id_seq', 102);
 

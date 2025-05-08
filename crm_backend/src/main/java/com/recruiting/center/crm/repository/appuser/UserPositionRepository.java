@@ -8,4 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserPositionRepository extends JpaRepository<UserPosition, Long> {
+
+    Optional<UserPosition> findByUnitPosition(String unitPosition);
 }

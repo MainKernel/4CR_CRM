@@ -50,6 +50,13 @@ CREATE TABLE candidates (
     territory_center_record VARCHAR(254)
 );
 
+CREATE INDEX idx_phone_number ON candidates(phone_number);
+CREATE INDEX idx_surname ON candidates(surname);
+CREATE INDEX idx_middle_name ON candidates(middle_name);
+CREATE INDEX idx_recruiter ON candidates(recruiter);
+CREATE INDEX idx_curator ON candidates(curator);
+CREATE INDEX idx_escorted_by ON candidates(escorted_by);
+
 CREATE TABLE candidate_comments(
     id BIGSERIAL PRIMARY KEY,
     comment_date DATE,

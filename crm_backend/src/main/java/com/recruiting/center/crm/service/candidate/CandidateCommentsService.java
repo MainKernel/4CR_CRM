@@ -1,6 +1,7 @@
 package com.recruiting.center.crm.service.candidate;
 
 
+import com.recruiting.center.crm.entity.candidate.Candidate;
 import com.recruiting.center.crm.entity.candidate.CandidateComment;
 import com.recruiting.center.crm.repository.candidate.CandidateCommentsRepository;
 import com.recruiting.center.crm.service.servicexceptions.CommentNotFoundException;
@@ -23,6 +24,7 @@ import java.util.List;
 @Transactional
 public class CandidateCommentsService {
     private final CandidateCommentsRepository candidateCommentsRepository;
+    private final CandidateService candidateService;
 
 
     public CandidateComment findById(Long id) {
@@ -49,7 +51,7 @@ public class CandidateCommentsService {
             throw new IllegalArgumentException("Attempt to save null");
         }
         try {
-            log.debug("CandidateCommentsService: Saving comment {}", comment.toString());
+            log.debug("CandidateCommentsService: Saving comment {}", comment);
             candidateCommentsRepository.save(comment);
             log.debug("CandidateCommentsService: Comment successfully saved");
 
@@ -59,14 +61,30 @@ public class CandidateCommentsService {
         }
     }
 
-    public void deleteComment(@Valid CandidateComment comment) {
+    @Transactional
+    public void deleteComment(CandidateComment comment) {
         if (!candidateCommentsRepository.existsById(comment.getId())) {
             log.error("CandidateCommentService: Attempt to delete non existing comment");
             throw new IllegalArgumentException("Attempt to delete non existing comment");
         }
 
         try {
-            candidateCommentsRepository.delete(comment);
+            /*
+             * Problem I found here
+             * Hibernate doesn't trigger deletion from database
+             * if you execute candidateCommentsRepository.deleteById(id)
+             * the comment still remain in database.
+             *
+             * So we get candidate from comment and delete comment in List<CandidateComment>
+             * after that save candidate back to database, and hibernate delete that comment
+             * from database
+             *
+             */
+
+            Candidate candidate = comment.getCandidate();
+            candidate.getComments().remove(comment);
+            candidateService.addCandidate(candidate);
+
             log.debug("CandidateCommentService: deleted comment with id {}", comment.getId());
         } catch (DataIntegrityViolationException ex) {
             throw new DataIntegrityConflictException("CandidateCommentService: error occurred due to comment deletion", ex);

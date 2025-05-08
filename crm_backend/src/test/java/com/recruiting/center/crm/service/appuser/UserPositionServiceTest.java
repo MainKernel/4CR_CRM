@@ -1,0 +1,48 @@
+package com.recruiting.center.crm.service.appuser;
+
+import com.recruiting.center.crm.annotations.IT;
+import com.recruiting.center.crm.database.IntegrationTestsDatabase;
+import com.recruiting.center.crm.entity.appuser.UserPosition;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@IT
+class UserPositionServiceTest extends IntegrationTestsDatabase {
+
+    @Autowired
+    private UserPositionService userPositionService;
+
+    @Test
+    void findById() {
+        UserPosition byId = userPositionService.findById(100L);
+        assertNotNull(byId);
+    }
+
+    @Test
+    void findByUnitName() {
+        UserPosition findByUnitName = userPositionService.findByUnitName("Рекрутер");
+        assertNotNull(findByUnitName);
+    }
+
+    @Test
+    void save() {
+        List<UserPosition> beforeSaving = userPositionService.findAll();
+        userPositionService.save(UserPosition.builder()
+                .unitPosition("Аналітик")
+                .build());
+        List<UserPosition> afterSaving = userPositionService.findAll();
+        assertEquals(beforeSaving.size() + 1, afterSaving.size());
+    }
+
+    @Test
+    void delete() {
+        List<UserPosition> beforeDeleting = userPositionService.findAll();
+        userPositionService.delete(userPositionService.findById(101L));
+        List<UserPosition> afterDeleting = userPositionService.findAll();
+        assertEquals(afterDeleting.size(), beforeDeleting.size() - 1 );
+    }
+}

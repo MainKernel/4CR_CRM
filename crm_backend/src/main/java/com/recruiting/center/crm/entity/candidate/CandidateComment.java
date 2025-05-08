@@ -1,10 +1,7 @@
 package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -28,5 +25,6 @@ public class CandidateComment {
     private String comment;
     @ManyToOne
     @JoinColumn(name = "candidate_id")
+    @ToString.Exclude
     private Candidate candidate;
 }

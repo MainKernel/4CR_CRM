@@ -40,5 +40,6 @@ public class IntegrationTestsDatabase {
     @AfterAll
     public static void stopContainer() {
         POSTGRE_SQL_CONTAINER.stop();
+        REDIS_CONTAINER.stop();
     }
 }

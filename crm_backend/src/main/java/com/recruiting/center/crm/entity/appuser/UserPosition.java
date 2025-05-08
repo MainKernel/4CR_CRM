@@ -1,6 +1,7 @@
 package com.recruiting.center.crm.entity.appuser;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +23,6 @@ public class UserPosition {
     )
     private long id;
     @Column(name = "unit_position")
+    @NotBlank
     private String unitPosition;
 }

@@ -31,11 +31,9 @@ public class AppUser {
     private String secondName;
     @ManyToOne
     @JoinColumn(name = "work_unit_id", nullable = false)
-    @NotBlank
     private WorkUnit workUnit;
     @ManyToOne
     @JoinColumn(name = "user_position_id", nullable = false)
-    @NotBlank
     private UserPosition userPosition;
     @Column(name = "username")
     @NotBlank

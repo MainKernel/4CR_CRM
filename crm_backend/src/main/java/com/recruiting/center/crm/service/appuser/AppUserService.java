@@ -96,17 +96,4 @@ public class AppUserService {
         return users;
     }
 
-    public List<AppUser> findByWorkUnitId(Long id) {
-        log.debug("AppService: search users by work unit id {}", id);
-
-        List<AppUser> users = appUserRepository.findByWorkUnitId(id);
-
-        if (users.isEmpty()) {
-            log.warn("AppUserService: No users found with unit id {}", id);
-        } else {
-            log.info("Found {} users with unit id: {}", users.size(), id);
-        }
-
-        return users;
-    }
 }

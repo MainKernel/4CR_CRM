@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface CandidateCommentsRepository extends JpaRepository<CandidateComment,Long> {
+public interface CandidateCommentsRepository extends JpaRepository<CandidateComment, Long> {
 
     List<CandidateComment> findByCandidateId(Long id);
 
