@@ -1,6 +1,16 @@
 package com.recruiting.center.crm.database;
 
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.runner.manipulation.Ordering;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,6 +20,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @SpringBootTest
 @Testcontainers
@@ -26,6 +40,7 @@ public class IntegrationTestsDatabase {
     private static final GenericContainer<?> REDIS_CONTAINER =
             new GenericContainer<>(DockerImageName.parse("redis:7"))
                     .withExposedPorts(6379);
+
     @DynamicPropertySource
     public static void postgresProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", POSTGRE_SQL_CONTAINER::getJdbcUrl);
@@ -36,6 +51,7 @@ public class IntegrationTestsDatabase {
         registry.add("spring.redis.host", REDIS_CONTAINER::getHost);
         registry.add("spring.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
     }
+
 
     @AfterAll
     public static void stopContainer() {

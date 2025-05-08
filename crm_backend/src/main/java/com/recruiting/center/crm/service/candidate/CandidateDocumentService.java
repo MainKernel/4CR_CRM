@@ -1,5 +1,6 @@
 package com.recruiting.center.crm.service.candidate;
 
+import com.recruiting.center.crm.entity.candidate.Candidate;
 import com.recruiting.center.crm.entity.candidate.CandidateDocument;
 import com.recruiting.center.crm.repository.candidate.CandidateDocumentsRepository;
 import com.recruiting.center.crm.service.servicexceptions.DataIntegrityConflictException;
@@ -19,6 +20,7 @@ import java.util.List;
 @Transactional
 public class CandidateDocumentService {
     private final CandidateDocumentsRepository documentsRepository;
+    private final CandidateService candidateService;
 
     public List<CandidateDocument> findByCandidateId(Long id) {
         List<CandidateDocument> documents = documentsRepository.findByCandidateId(id);
@@ -46,7 +48,12 @@ public class CandidateDocumentService {
         }
 
         try {
-            documentsRepository.delete(document);
+            /*
+            *   Same problem as in comment delete method
+            */
+            Candidate candidate = document.getCandidate();
+            candidate.getDocuments().remove(document);
+            candidateService.addCandidate(candidate);
             log.debug("CandidateDocumentService: document was successfully deleted");
         } catch (DataIntegrityViolationException ex) {
             log.error("CandidateDocumentService: Error occurred due to document deletion");
