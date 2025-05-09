@@ -16,10 +16,26 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      # Redis service
       redis:
         image: redis:7
         ports:
           - 6379:6379
+      # PostgreSQL service - use this instead of Testcontainers for CI
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -32,9 +48,8 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Enable Docker host access
-        run: |
-          echo "DOCKER_HOST=unix:///var/run/docker.sock" >> $GITHUB_ENV
+      - name: Make Gradlew Executable
+        run: chmod +x ./crm_backend/gradlew
 
       - name: Set working directory
         run: echo "WORKING_DIR=crm_backend" >> $GITHUB_ENV
@@ -43,14 +58,14 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
         run: ./gradlew clean test
         env:
-          DOCKER_HOST: unix:///var/run/docker.sock
-          TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
-          TESTCONTAINERS_RYUK_DISABLED: false
-          SPRING_DATASOURCE_URL: jdbc:tc:postgresql:15:///testdb
+          # Disable Testcontainers and use the PostgreSQL service directly
+          TESTCONTAINERS_RYUK_DISABLED: true
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
           SPRING_PROFILES_ACTIVE: test
           SPRING_REDIS_HOST: localhost
           SPRING_REDIS_PORT: 6379
-
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
