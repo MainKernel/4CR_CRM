@@ -64,6 +64,7 @@ class CandidateDocumentServiceTest extends IntegrationTestsDatabase {
     @Test
     @Rollback
     void add() {
+
     }
 
     @Test
