@@ -45,6 +45,7 @@ class UserPositionServiceTest extends IntegrationTestsDatabase {
     @Test
     @Rollback
     void delete() {
+
         List<UserPosition> beforeDeleting = userPositionService.findAll();
         userPositionService.delete(userPositionService.findById(101L));
         List<UserPosition> afterDeleting = userPositionService.findAll();
