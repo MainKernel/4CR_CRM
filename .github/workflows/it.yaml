@@ -33,7 +33,7 @@
             cache: 'gradle'  # Або 'maven' для Maven
 
         - name: Set working directory
-          run: echo "WORKING_DIR=4rc_backend" >> $GITHUB_ENV
+          run: echo "WORKING_DIR=crm_backend" >> $GITHUB_ENV
 
         - name: Grant execute permission for gradlew
           working-directory: ${{ env.WORKING_DIR }}
@@ -50,9 +50,9 @@
             SPRING_REDIS_PORT: 6379
 
         - name: Upload test reports
-          uses: actions/upload-artifact@@v4
+          uses: actions/upload-artifact@v4
           if: always()  # Завантажить артефакт навіть якщо тести провалились
           with:
             name: test-reports
-            path: 4rc_backend/build/reports/**/*  # Шлях до звітів тестів
+            path: crm_backend/build/reports/**/*  # Шлях до звітів тестів
 
