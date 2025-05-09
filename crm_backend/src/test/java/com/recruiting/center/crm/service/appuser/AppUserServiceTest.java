@@ -29,6 +29,7 @@ class AppUserServiceTest extends IntegrationTestsDatabase {
     void getUserByUsername() {
         AppUser recruiter = appUserService.getUserByUsername("recruiter");
 
+
         assertNotNull(recruiter);
     }
 
