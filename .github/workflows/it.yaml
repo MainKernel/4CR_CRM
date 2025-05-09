@@ -3,10 +3,10 @@ name: Backend CI
 on:
   push:
     paths:
-      - '4rc_backend/**'  # Тригер тільки при змінах у бекенді
+      - 'crm_backend/**'  # Тригер тільки при змінах у бекенді
   pull_request:
     paths:
-      - '4rc_backend/**'
+      - 'crm_backend/**'
 
 env:
   SPRING_PROFILES_ACTIVE: test
