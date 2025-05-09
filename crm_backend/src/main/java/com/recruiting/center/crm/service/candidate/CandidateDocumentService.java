@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Validated
 public class CandidateDocumentService {
     private final CandidateDocumentsRepository documentsRepository;
     private final CandidateService candidateService;
@@ -44,7 +46,7 @@ public class CandidateDocumentService {
     public void delete(@Valid CandidateDocument document) {
         if (!documentsRepository.existsById(document.getId())) {
             log.warn("CandidateDocumentService: no document exists with id {}", document.getId());
-            throw new IllegalArgumentException("CandidateDocumentService: no document exists");
+            throw new DocumentNotFoundException("CandidateDocumentService: no document exists");
         }
 
         try {
@@ -53,7 +55,7 @@ public class CandidateDocumentService {
             */
             Candidate candidate = document.getCandidate();
             candidate.getDocuments().remove(document);
-            candidateService.addCandidate(candidate);
+            documentsRepository.delete(document);
             log.debug("CandidateDocumentService: document was successfully deleted");
         } catch (DataIntegrityViolationException ex) {
             log.error("CandidateDocumentService: Error occurred due to document deletion");
@@ -61,7 +63,7 @@ public class CandidateDocumentService {
         }
     }
 
-    public void add(@Valid CandidateDocument document) {
+    public void addDocument(@Valid CandidateDocument document) {
         try {
             documentsRepository.save(document);
             log.debug("CandidateDocumentService: document was successfully saved");

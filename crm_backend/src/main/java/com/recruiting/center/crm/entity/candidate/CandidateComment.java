@@ -7,7 +7,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "candidate_comments")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,6 +26,7 @@ public class CandidateComment {
     private String comment;
     @ManyToOne
     @JoinColumn(name = "candidate_id")
-    @ToString.Exclude
     private Candidate candidate;
+
+
 }

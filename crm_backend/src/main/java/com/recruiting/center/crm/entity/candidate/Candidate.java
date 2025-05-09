@@ -2,14 +2,14 @@ package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "candidates")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -56,8 +56,21 @@ public class Candidate {
     private String orderNumber;
     @Column(name = "territory_center_record")
     private String territoryCenterRecord;
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<CandidateComment> comments;
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL,orphanRemoval = true,  fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
     private List<CandidateDocument> documents;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Candidate candidate = (Candidate) o;
+        return id != 0 && id == candidate.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

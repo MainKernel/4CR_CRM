@@ -61,8 +61,8 @@ public class CandidateCommentsService {
         }
     }
 
-    @Transactional
-    public void deleteComment(CandidateComment comment) {
+
+    public void deleteComment(@Valid CandidateComment comment) {
         if (!candidateCommentsRepository.existsById(comment.getId())) {
             log.error("CandidateCommentService: Attempt to delete non existing comment");
             throw new IllegalArgumentException("Attempt to delete non existing comment");
@@ -83,7 +83,7 @@ public class CandidateCommentsService {
 
             Candidate candidate = comment.getCandidate();
             candidate.getComments().remove(comment);
-            candidateService.addCandidate(candidate);
+            candidateCommentsRepository.delete(comment);
 
             log.debug("CandidateCommentService: deleted comment with id {}", comment.getId());
         } catch (DataIntegrityViolationException ex) {
