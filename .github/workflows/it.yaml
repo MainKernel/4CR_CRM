@@ -1,10 +1,12 @@
-name: Gradle CI
+name: Backend CI
 
 on:
   push:
-    branches: [ main ]
+    paths:
+      - '4rc_backend/**'  # Тригер тільки при змінах у бекенді
   pull_request:
-    branches: [ main ]
+    paths:
+      - '4rc_backend/**'
 
 env:
   SPRING_PROFILES_ACTIVE: test
@@ -14,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # Для Testcontainers не потрібно, але як приклад додано Redis
       redis:
         image: redis:7
         ports:
@@ -29,22 +30,29 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+          cache: 'gradle'  # Або 'maven' для Maven
+
+      - name: Set working directory
+        run: echo "WORKING_DIR=4rc_backend" >> $GITHUB_ENV
 
       - name: Grant execute permission for gradlew
+        working-directory: ${{ env.WORKING_DIR }}
         run: chmod +x gradlew
 
-      - name: Build and test with Gradle
-        run: ./gradlew clean test
+      - name: Build and test
+        working-directory: ${{ env.WORKING_DIR }}
+        run: ./gradlew clean test  # Для Maven: mvn clean test
         env:
-          # Налаштування для Testcontainers
           TESTCONTAINERS_HOST_OVERRIDE: host.testcontainers.internal
-          TESTCONTAINERS_RYUK_DISABLED: true
-
-          # Налаштування Spring Boot
           SPRING_DATASOURCE_URL: jdbc:tc:postgresql:15:///testdb
-          SPRING_DATASOURCE_USERNAME: test
-          SPRING_DATASOURCE_PASSWORD: test
           SPRING_PROFILES_ACTIVE: test
           SPRING_REDIS_HOST: localhost
           SPRING_REDIS_PORT: 6379
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v3
+        if: always()  # Завантажить артефакт навіть якщо тести провалились
+        with:
+          name: test-reports
+          path: 4rc_backend/build/reports/**/*  # Шлях до звітів тестів
+
