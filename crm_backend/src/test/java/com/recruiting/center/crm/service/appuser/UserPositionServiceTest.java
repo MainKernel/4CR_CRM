@@ -5,6 +5,7 @@ import com.recruiting.center.crm.database.IntegrationTestsDatabase;
 import com.recruiting.center.crm.entity.appuser.UserPosition;
 import com.recruiting.center.crm.service.servicexceptions.DocumentNotFoundException;
 import com.recruiting.center.crm.service.servicexceptions.UserNotFoundException;
+import com.recruiting.center.crm.service.servicexceptions.UserPositionNotFound;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class UserPositionServiceTest extends IntegrationTestsDatabase {
 
     @Test
     void findByNonExistingId(){
-        assertThrows(UserNotFoundException.class, () -> userPositionService.findById(99L));
+        assertThrows(UserPositionNotFound.class, () -> userPositionService.findById(99L));
     }
 
     @Test
