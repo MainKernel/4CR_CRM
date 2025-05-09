@@ -5,15 +5,19 @@ import com.recruiting.center.crm.database.IntegrationTestsDatabase;
 import com.recruiting.center.crm.entity.appuser.AppUser;
 import com.recruiting.center.crm.entity.appuser.WorkUnit;
 import com.recruiting.center.crm.service.servicexceptions.UserNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @IT
+@Transactional
 class AppUserServiceTest extends IntegrationTestsDatabase {
     @Autowired
     private AppUserService appUserService;
@@ -35,6 +39,7 @@ class AppUserServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    @Rollback
     void save() {
         AppUser appUser = AppUser.builder()
                 .firstName("Test1")
@@ -50,16 +55,15 @@ class AppUserServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
-    void failToSaveUser(){
+    void failToSaveUserWithConstraintViolation(){
         AppUser appUser = AppUser.builder()
                 .firstName("Test1")
                 .secondName("Test 2")
                 .userPosition(userPositionService.findById(103L))
-                .username("Test user")
                 .password("$2a$10$dXjufsohfosdhfoshdofshof")
                 .build();
 
-        assertThrows(DataIntegrityViolationException.class, () -> appUserService.save(appUser));
+        assertThrows(ConstraintViolationException.class, () -> appUserService.save(appUser));
     }
 
     @Test

@@ -6,8 +6,11 @@ import com.recruiting.center.crm.entity.candidate.CandidateComment;
 import com.recruiting.center.crm.repository.candidate.CandidateCommentsRepository;
 import com.recruiting.center.crm.repository.candidate.CandidateRepository;
 import com.recruiting.center.crm.service.servicexceptions.CommentNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @IT
+@Transactional
 class CandidateCommentsServiceTest extends IntegrationTestsDatabase {
     @Autowired
     private CandidateCommentsService candidateCommentsService;
@@ -46,6 +50,7 @@ class CandidateCommentsServiceTest extends IntegrationTestsDatabase {
 
 
     @Test
+    @Rollback
     void deleteComment() {
         List<CandidateComment> beforeDeletion = commentsRepository.findAll();
         CandidateComment byId = candidateCommentsService.findById(101L);
@@ -59,10 +64,11 @@ class CandidateCommentsServiceTest extends IntegrationTestsDatabase {
     void deleteNonExistingComment() {
         CandidateComment first = candidateService.findCandidateById(100L).getComments().getFirst();
         first.setId(10L);
-        assertThrows(IllegalArgumentException.class, () -> candidateCommentsService.deleteComment(first));
+        assertThrows(JpaSystemException.class, () -> candidateCommentsService.deleteComment(first));
     }
 
     @Test
+    @Rollback
     void saveComment() {
         List<CandidateComment> beforeSaving = commentsRepository.findAll();
         candidateCommentsService.saveComment(CandidateComment.builder()

@@ -4,14 +4,17 @@ import com.recruiting.center.crm.annotations.IT;
 import com.recruiting.center.crm.database.IntegrationTestsDatabase;
 import com.recruiting.center.crm.entity.appuser.WorkUnit;
 import com.recruiting.center.crm.service.servicexceptions.WorkUnitNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @IT
+@Transactional
 class WorkUnitServiceTest extends IntegrationTestsDatabase {
     @Autowired
     private WorkUnitService workUnitService;
@@ -44,6 +47,7 @@ class WorkUnitServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    @Rollback
     void deleteById() {
         List<WorkUnit> beforeDeletion = workUnitService.findAllWorkUnits();
 
@@ -55,6 +59,7 @@ class WorkUnitServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    @Rollback
     void saveWorkUnit() {
         List<WorkUnit> beforeSaving = workUnitService.findAllWorkUnits();
         WorkUnit workUnit = WorkUnit.builder().unitName("Test Unit").build();

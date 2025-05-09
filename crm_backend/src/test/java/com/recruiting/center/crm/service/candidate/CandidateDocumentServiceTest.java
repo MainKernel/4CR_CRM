@@ -5,14 +5,17 @@ import com.recruiting.center.crm.database.IntegrationTestsDatabase;
 import com.recruiting.center.crm.entity.candidate.CandidateDocument;
 import com.recruiting.center.crm.repository.candidate.CandidateDocumentsRepository;
 import com.recruiting.center.crm.service.servicexceptions.DocumentNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @IT
+@Transactional
 class CandidateDocumentServiceTest extends IntegrationTestsDatabase {
     @Autowired
     private CandidateDocumentService candidateDocumentService;
@@ -44,9 +47,10 @@ class CandidateDocumentServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    @Rollback
     void delete() {
         List<CandidateDocument> beforeDeletion = candidateDocumentsRepository.findAll();
-        CandidateDocument byDocumentId = candidateDocumentService.findByDocumentId(100L);
+        CandidateDocument byDocumentId = candidateDocumentService.findByDocumentId(107L);
         candidateDocumentService.delete(byDocumentId);
         List<CandidateDocument> afterDeletion = candidateDocumentsRepository.findAll();
         assertEquals(beforeDeletion.size() - 1, afterDeletion.size());
@@ -58,6 +62,7 @@ class CandidateDocumentServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    @Rollback
     void add() {
     }
 

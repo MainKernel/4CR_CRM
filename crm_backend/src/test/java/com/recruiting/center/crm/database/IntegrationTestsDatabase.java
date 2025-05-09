@@ -8,6 +8,8 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.manipulation.Ordering;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+
 
 @SpringBootTest
 @Testcontainers
@@ -50,6 +50,12 @@ public class IntegrationTestsDatabase {
 
         registry.add("spring.redis.host", REDIS_CONTAINER::getHost);
         registry.add("spring.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
+    }
+
+    @BeforeAll
+    public static void runContainer() {
+        POSTGRE_SQL_CONTAINER.start();
+        REDIS_CONTAINER.start();
     }
 
 
