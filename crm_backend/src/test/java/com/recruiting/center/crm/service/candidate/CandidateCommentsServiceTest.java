@@ -79,6 +79,7 @@ class CandidateCommentsServiceTest extends IntegrationTestsDatabase {
                 .build());
         List<CandidateComment> afterSaving = commentsRepository.findAll();
         assertEquals(beforeSaving.size() + 1, afterSaving.size());
+
     }
 
     @Test
