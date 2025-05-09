@@ -63,6 +63,7 @@ class AppUserServiceTest extends IntegrationTestsDatabase {
                 .password("$2a$10$dXjufsohfosdhfoshdofshof")
                 .build();
 
+
         assertThrows(ConstraintViolationException.class, () -> appUserService.save(appUser));
     }
 
