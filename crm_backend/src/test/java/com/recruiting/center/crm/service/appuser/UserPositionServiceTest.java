@@ -43,6 +43,11 @@ class UserPositionServiceTest extends IntegrationTestsDatabase {
     }
 
     @Test
+    void findNonExistingPosition(){
+        assertThrows(UserPositionNotFound.class, () -> userPositionService.findByUnitName("Non existing position"));
+    }
+
+    @Test
     @Rollback
     void save() {
         List<UserPosition> beforeSaving = userPositionService.findAll();
