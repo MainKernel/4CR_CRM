@@ -1,7 +1,9 @@
 package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Valid
 public class PsychologicalTest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "psychological_test_id_seq")
@@ -23,9 +26,11 @@ public class PsychologicalTest {
     )
     private long id;
     @NotBlank
+    @NotNull
     @Column(name = "status", unique = true, nullable = false)
     private String status;
     @NotBlank
+    @NotNull
     @Column(name = "color", nullable = false)
     private String color;
 }

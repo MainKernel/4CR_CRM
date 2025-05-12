@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-@Valid
+@Validated
 public class PsychologyTestService {
     private final PsychologyTestRepository psychologyTestRepository;
 

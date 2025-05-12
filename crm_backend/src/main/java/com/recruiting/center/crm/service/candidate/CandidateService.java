@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
+@Validated
 public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final CandidatePagingRepository candidatePagingRepository;
@@ -110,7 +112,7 @@ public class CandidateService {
         );
     }
 
-    public List<Candidate> findByRecommendationLetterDate(@NotBlank LocalDate date) {
+    public List<Candidate> findByRecommendationLetterDate(LocalDate date) {
         return findCandidates(
                 () -> candidateRepository.findCandidateByRecommendationLetter(date),
                 "date",
@@ -118,7 +120,7 @@ public class CandidateService {
         );
     }
 
-    public Page<Candidate> findPageByRecruiterId(String recruiter, Pageable pageable) {
+    public Page<Candidate> findPageByRecruiter(String recruiter, Pageable pageable) {
 
         Page<Candidate> allByRecruiterId = candidatePagingRepository.findAllByRecruiter(recruiter, pageable);
 
@@ -138,7 +140,7 @@ public class CandidateService {
         );
     }
 
-    public Page<Candidate> findPageByRecommendationLetter(@NotBlank LocalDate date, Pageable pageable) {
+    public Page<Candidate> findPageByRecommendationLetter(LocalDate date, Pageable pageable) {
         return findCandidatesPage(() -> candidatePagingRepository.findAllByRecommendationLetter(date, pageable),
                 "date",
                 date.toString()

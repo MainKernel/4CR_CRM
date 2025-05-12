@@ -19,6 +19,7 @@ INSERT INTO duty_type (id, status, color) VALUES
 (100, 'Контракт', 'FFFFFF'),
 (101, 'Контракт 18-24', 'FFFFFF'),
 (102, 'Мобілізація', 'FFFFFF');
+
 -- Змінюємо послідовність для автоінкременту
 SELECT setval('duty_type_id_seq', 102);
 
@@ -27,9 +28,10 @@ INSERT INTO psychological_test (id, status, color) VALUES
 (100, 'Пройдено успішно', '10FF00'),
 (101, 'Не проходив', 'FFFFFF'),
 (102, 'Не пройшов тестування', 'E30000'),
-(103, 'Результати отримано', '00DA00');
+(103, 'Результати отримано', '00DA00'),
+(104, 'Testing', 'FFFFFF');
 -- Змінюємо послідовність для автоінкременту
-SELECT setval('psychological_test_id_seq', 103);
+SELECT setval('psychological_test_id_seq', 104);
 
 -- Додавання тестових військових частин з початковим id=100
 INSERT INTO military_unit (id, unit_name, strict_unit_name, comment) VALUES
@@ -147,3 +149,5 @@ INSERT INTO candidate_documents (id, file_name, file_type, file_path, uploaded_d
 (107, 'application_6.pdf', 'application/pdf', '/documents/candidates/105/application_6.pdf', '2023-06-18', 'Олександр Петренко', 'Заява', 105),
 (108, 'rejection_letter_7.pdf', 'application/pdf', '/documents/candidates/106/rejection_letter_7.pdf', '2023-07-25', 'Марія Іванова', 'Лист відмови', 106),
 (109, 'medical_report_10.pdf', 'application/pdf', '/documents/candidates/109/medical_report_10.pdf', '2023-10-07', 'Василь Сидоренко', 'Медичний висновок', 109);
+
+SELECT setval('candidate_documents_id_seq', 109);

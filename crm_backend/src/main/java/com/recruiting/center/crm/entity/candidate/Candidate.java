@@ -1,7 +1,11 @@
 package com.recruiting.center.crm.entity.candidate;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Valid
 public class Candidate {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_id_seq")
@@ -23,15 +28,23 @@ public class Candidate {
     )
     private long id;
     @Column(name = "surname", nullable = false, length = 128)
+    @NotBlank
+    @NotNull
     private String surname;
     @Column(name = "name", nullable = false, length = 128)
+    @NotBlank
+    @NotNull
     private String name;
     @Column(name = "middle_name", length = 128, nullable = false)
+    @NotBlank
+    @NotNull
     private String middleName;
     @ManyToOne
     @JoinColumn(name = "candidate_status_id", nullable = false)
     private CandidateStatus status;
     @Column(name = "phone_number", nullable = false)
+    @NotBlank
+    @NotNull
     private String phoneNumber;
     @ManyToOne
     @JoinColumn(name = "duty_type_id", nullable = false)
