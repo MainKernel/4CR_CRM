@@ -40,6 +40,8 @@ public class MilitaryUnitService {
         return all;
     }
 
+    //TODO map all "A" values from ukrainian to ENG
+
     public MilitaryUnit findByUnitName(String unitName) {
         if(unitName.isBlank()){
             log.error("MilitaryUnitService: Attempt to search with empty unit name");
@@ -66,6 +68,7 @@ public class MilitaryUnitService {
         }
     }
 
+    //TODO map all "A" values from ukrainian to ENG
     public void saveMilitaryUnit(@Valid MilitaryUnit militaryUnit){
         try{
             militaryUnitRepository.save(militaryUnit);
