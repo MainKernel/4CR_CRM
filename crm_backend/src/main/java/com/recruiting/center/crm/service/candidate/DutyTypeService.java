@@ -64,4 +64,11 @@ public class DutyTypeService {
             throw new DataIntegrityConflictException("DutyTypeService: Error due to saving", ex);
         }
     }
+
+    public DutyType findByStatus(String status) {
+        return dutyTypeRepository.findByStatus(status).orElseThrow(() -> {
+            log.error("DutyTypeService: Duty type was not found");
+            return new DutyTypeNotFound("DutyTypeService: Duty type was not found");
+        });
+    }
 }

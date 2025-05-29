@@ -25,4 +25,6 @@ public class UserPosition {
     @Column(name = "unit_position")
     @NotBlank
     private String unitPosition;
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
 }

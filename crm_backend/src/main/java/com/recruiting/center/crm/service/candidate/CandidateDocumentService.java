@@ -21,8 +21,7 @@ import java.util.List;
 @Transactional
 @Validated
 public class CandidateDocumentService {
-    private final CandidateDocumentsRepository documentsRepository;
-    private final CandidateService candidateService;
+    private final CandidateDocumentsRepository documentsRepository;;
 
     public List<CandidateDocument> findByCandidateId(Long id) {
         List<CandidateDocument> documents = documentsRepository.findByCandidateId(id);

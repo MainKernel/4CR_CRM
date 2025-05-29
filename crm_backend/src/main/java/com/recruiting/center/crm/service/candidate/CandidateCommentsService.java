@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -22,11 +24,12 @@ import java.util.List;
 @Slf4j
 @Validated
 @Transactional
+@CacheConfig(cacheNames = "comments")
 public class CandidateCommentsService {
     private final CandidateCommentsRepository candidateCommentsRepository;
     private final CandidateService candidateService;
 
-
+    @CachePut()
     public CandidateComment findById(Long id) {
         return candidateCommentsRepository.findById(id).orElseThrow(() -> {
             log.error("CandidateCommentsService: No comment with id {}", id);

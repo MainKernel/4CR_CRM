@@ -1,8 +1,12 @@
 package com.recruiting.center.crm.service.candidate;
 
+import com.recruiting.center.crm.dto.response.GetCandidatesResponseDto;
 import com.recruiting.center.crm.entity.candidate.Candidate;
+import com.recruiting.center.crm.entity.candidate.enums.Completed;
 import com.recruiting.center.crm.repository.candidate.CandidatePagingRepository;
 import com.recruiting.center.crm.repository.candidate.CandidateRepository;
+import com.recruiting.center.crm.service.candidate.specifications.CandidateFullSearchSpecification;
+import com.recruiting.center.crm.service.candidate.specifications.CandidateWithoutCuratorAndEscortSpecification;
 import com.recruiting.center.crm.service.servicexceptions.CandidateNotFoundException;
 import com.recruiting.center.crm.service.servicexceptions.DataIntegrityConflictException;
 import com.recruiting.center.crm.utils.phone.PhoneValidationService;
@@ -11,9 +15,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -27,6 +34,7 @@ import java.util.function.Supplier;
 @Slf4j
 @Transactional
 @Validated
+//@CacheConfig(cacheNames = "candidates")
 public class CandidateService {
     private final CandidateRepository candidateRepository;
     private final CandidatePagingRepository candidatePagingRepository;
@@ -107,7 +115,7 @@ public class CandidateService {
     public List<Candidate> findByEscortedBy(@NotBlank String escortedBy) {
         return findCandidates(
                 () -> candidateRepository.findCandidateByEscortedBy(escortedBy),
-                "escortedBy",
+                "escort",
                 escortedBy
         );
     }
@@ -149,7 +157,7 @@ public class CandidateService {
 
     public Page<Candidate> findPageByEscortedBy(@NotBlank String escortedBy, Pageable pageable) {
         return findCandidatesPage(() -> candidatePagingRepository.findAllByEscortedBy(escortedBy, pageable),
-                "escorted by",
+                "escort by",
                 escortedBy
         );
     }
@@ -175,6 +183,7 @@ public class CandidateService {
         }
     }
 
+
     public void addCandidate(@Valid Candidate candidate) {
         try {
             candidateRepository.save(candidate);
@@ -183,5 +192,32 @@ public class CandidateService {
             log.error("CandidateService: Error occurred due to candidate saving");
             throw new DataIntegrityConflictException("CandidateService: Error occurred due to candidate saving", ex);
         }
+    }
+
+//    @CachePut
+    public Page<Candidate> findAllCandidatesInProcess(Pageable pageable){
+        Page<Candidate> byCompletedNot = candidatePagingRepository.findByCompletedNot(Completed.COMPLETED, pageable);
+        if(byCompletedNot.getContent().isEmpty()){
+            log.debug("CandidateService: No candidates found");
+        } else {
+            log.debug("CandidateService: Found {} candidates", byCompletedNot.getContent().size());
+        }
+        return byCompletedNot;
+    }
+
+    //TODO error handling
+    public GetCandidatesResponseDto findBySearchQuery(String query, Pageable pageable) {
+        CandidateFullSearchSpecification spec = new CandidateFullSearchSpecification(query);
+        return new GetCandidatesResponseDto(candidatePagingRepository.findAll(spec, pageable), HttpStatus.OK);
+    }
+    // TODO error handling
+    public Page<Candidate> getAllNotCompleted(Completed completed, Pageable pageable) {
+        return candidatePagingRepository.findByCompletedNot(completed, pageable);
+    }
+
+    // TODO error handling
+    public GetCandidatesResponseDto findAllCandidatesWithoutRecruiterAndEscortAndNotCompleted(Pageable pageable){
+        CandidateWithoutCuratorAndEscortSpecification spec = new CandidateWithoutCuratorAndEscortSpecification();
+        return new GetCandidatesResponseDto( candidatePagingRepository.findAll(spec, pageable), HttpStatus.OK);
     }
 }

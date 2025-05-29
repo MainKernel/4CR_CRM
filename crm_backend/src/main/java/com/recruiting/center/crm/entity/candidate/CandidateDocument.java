@@ -1,10 +1,12 @@
 package com.recruiting.center.crm.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
@@ -15,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CandidateDocument {
+public class CandidateDocument implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_documents_id_seq")
     @SequenceGenerator(
@@ -43,6 +45,7 @@ public class CandidateDocument {
     private String type;
     @ManyToOne
     @JoinColumn(name="candidate_id")
+    @JsonBackReference
     private Candidate candidate;
 
     @Override

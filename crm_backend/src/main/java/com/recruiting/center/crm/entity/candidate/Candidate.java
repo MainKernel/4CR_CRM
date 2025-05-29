@@ -1,12 +1,14 @@
 package com.recruiting.center.crm.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.recruiting.center.crm.entity.candidate.enums.Completed;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.validation.annotation.Validated;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,7 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Valid
-public class Candidate {
+
+public class Candidate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_id_seq")
     @SequenceGenerator(
@@ -52,6 +55,9 @@ public class Candidate {
     @ManyToOne
     @JoinColumn(name = "military_unit_id", nullable = false)
     private MilitaryUnit militaryUnit;
+    @ManyToOne
+    @JoinColumn(name="candidate_position_id", nullable = false)
+    private CandidatePosition candidatePosition;
     @Column(name = "recommendation_letter")
     private LocalDate recommendationLetter;
     @Column(name = "recruiter")
@@ -63,16 +69,28 @@ public class Candidate {
     @ManyToOne
     @JoinColumn(name = "psychological_test", nullable = false)
     private PsychologicalTest psychologicalTest;
-    @Column(name = "enrolment_order")
-    private LocalDate enrolmentOrder;
+    @Column(name = "enrolment_order_date")
+    private LocalDate enrolmentOrderDate;
     @Column(name = "order_number")
     private String orderNumber;
+    @Column(name = "training_center_enrolment_order")
+    private LocalDate trainingCenterOrder;
+    @Column(name = "training_center_order_number")
+    private String trainingCenterOrderNumber;
     @Column(name = "territory_center_record")
     private String territoryCenterRecord;
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @OrderBy("commentDate DESC")
+    @JsonManagedReference
     private List<CandidateComment> comments;
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    @OrderBy("uploadedDate DESC")
+    @JsonManagedReference
     private List<CandidateDocument> documents;
+    @Column(name = "in_process")
+    @Enumerated(value = EnumType.STRING)
+    @Builder.Default
+    private Completed completed = Completed.INPROCESS;
 
     @Override
     public boolean equals(Object o) {

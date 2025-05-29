@@ -1,8 +1,10 @@
 package com.recruiting.center.crm.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CandidateComment {
+public class CandidateComment implements Serializable {
     @Id
     @SequenceGenerator(
             name = "candidate_comments_seq",
@@ -26,6 +28,7 @@ public class CandidateComment {
     private String comment;
     @ManyToOne
     @JoinColumn(name = "candidate_id")
+    @JsonBackReference
     private Candidate candidate;
 
 

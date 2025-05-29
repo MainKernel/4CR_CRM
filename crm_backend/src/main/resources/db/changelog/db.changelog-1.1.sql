@@ -1,10 +1,12 @@
 CREATE TABLE work_unit(
     id BIGSERIAL PRIMARY KEY,
-    unit_name VARCHAR(512) NOT NULL
+    unit_name VARCHAR(512) NOT NULL,
+    is_disabled BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE user_position(
     id BIGSERIAL PRIMARY KEY,
-    unit_position VARCHAR(512) NOT NULL
+    unit_position VARCHAR(512) NOT NULL,
+    is_disabled BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE app_user(

@@ -8,13 +8,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "duty_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DutyType {
+public class DutyType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "duty_type_id_seq")
     @SequenceGenerator(
@@ -31,4 +33,6 @@ public class DutyType {
     @NotBlank
     @NotNull
     private String color;
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
 }

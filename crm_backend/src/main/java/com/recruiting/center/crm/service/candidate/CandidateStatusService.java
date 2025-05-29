@@ -3,6 +3,7 @@ package com.recruiting.center.crm.service.candidate;
 import com.recruiting.center.crm.entity.candidate.CandidateStatus;
 import com.recruiting.center.crm.repository.candidate.CandidateStatusRepository;
 import com.recruiting.center.crm.service.servicexceptions.CandidateStatusException;
+import com.recruiting.center.crm.service.servicexceptions.CandidateStatusNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class CandidateStatusService {
+public class CandidateStatusService  {
     private final CandidateStatusRepository statusRepository;
 
     public CandidateStatus findStatusById(Long id){
         return statusRepository.findById(id).orElseThrow(() -> {
             log.error("CandidateStatusService: Attempt to find non existing status with id {}", id);
            return new IllegalArgumentException("Attempt to find non existing status with id " + id);
+        });
+    }
+
+    public CandidateStatus findStatusByStatusName(String statusName) {
+        return statusRepository.findByStatus(statusName).orElseThrow(() -> {
+           log.error("CandidateStatusService: CandidateStatusNotFound");
+            return new CandidateStatusNotFoundException("CandidateStatusService: Candidate status not found");
         });
     }
 

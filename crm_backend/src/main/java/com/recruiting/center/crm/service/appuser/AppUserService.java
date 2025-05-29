@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,10 @@ public class AppUserService {
                     return new UserNotFoundException("User not found");
                 }
         );
+    }
+
+    public List<AppUser> getAllAppUsers() {
+        return appUserRepository.findAll();
     }
 
     public void save(@Valid AppUser user) {
@@ -94,6 +99,10 @@ public class AppUserService {
         }
 
         return users;
+    }
+
+    public boolean isExist(String username) {
+        return appUserRepository.findByUsername(username).isPresent();
     }
 
 }

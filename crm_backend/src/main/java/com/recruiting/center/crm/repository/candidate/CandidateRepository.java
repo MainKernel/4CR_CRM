@@ -19,5 +19,4 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     List<Candidate> findCandidateByEscortedBy(String escortedBy);
     List<Candidate> findCandidateByRecommendationLetter(LocalDate date);
 
-
 }

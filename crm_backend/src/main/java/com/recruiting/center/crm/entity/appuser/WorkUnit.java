@@ -25,4 +25,6 @@ public class WorkUnit {
     @Column(name = "unit_name")
     @NotBlank
     private String unitName;
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
 }

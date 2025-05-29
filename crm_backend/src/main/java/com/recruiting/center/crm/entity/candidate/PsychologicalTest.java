@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "psychological_test")
 @Data
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Valid
-public class PsychologicalTest {
+public class PsychologicalTest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "psychological_test_id_seq")
     @SequenceGenerator(
@@ -33,4 +35,6 @@ public class PsychologicalTest {
     @NotNull
     @Column(name = "color", nullable = false)
     private String color;
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
 }

@@ -5,13 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "candidate_status")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CandidateStatus {
+public class CandidateStatus implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "candidate_status_id_seq")
     @SequenceGenerator(
@@ -26,4 +28,6 @@ public class CandidateStatus {
     @NotBlank
     @Column(name = "color")
     private String color;
+    @Column(name = "is_disabled")
+    private Boolean isDisabled;
 }

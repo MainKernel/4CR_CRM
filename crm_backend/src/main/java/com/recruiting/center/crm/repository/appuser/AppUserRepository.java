@@ -15,4 +15,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     List<AppUser> findBySecondName(String secondName);
     Optional<AppUser> findByUsername(String username);
     List<AppUser> findByWorkUnit(WorkUnit workUnit);
+
+    List<AppUser> findAllByIsAccountNonExpiredTrueAndIsAccountNonLockedTrueAndIsCredentialsNonExpiredTrue();
 }

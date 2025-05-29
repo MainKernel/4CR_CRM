@@ -7,12 +7,12 @@ import com.recruiting.center.crm.repository.candidate.CandidatePagingRepository;
 import com.recruiting.center.crm.repository.candidate.CandidateRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
@@ -38,6 +38,8 @@ class CandidateServiceTest extends IntegrationTestsDatabase {
     private PsychologyTestService psychologyTestService;
     @Autowired
     private CandidateRepository candidateRepository;
+    @Autowired
+    private CandidatePositionService candidatePositionService;
 
     @Test
     void findCandidateById() {
@@ -102,18 +104,23 @@ class CandidateServiceTest extends IntegrationTestsDatabase {
     @Test
     @Rollback
     void deleteCandidate() {
-
+        int beforeDeletion = candidateRepository.findAll().size();
+        candidateService.deleteCandidate(candidateService.findCandidateById(100L));
+        int afterDeletion = candidateRepository.findAll().size();
+        assertEquals(beforeDeletion - 1, afterDeletion);
     }
 
     @Test
     void deleteNonExistingCandidate() {
-
+        Candidate candidateById = candidateService.findCandidateById(100L);
+        candidateById.setId(99L);
+        assertThrows(JpaSystemException.class, () -> candidateService.deleteCandidate(candidateById));
     }
 
     @Test
     @Rollback
     void addCandidate() {
-       Candidate nonExistingCandidate = Candidate.builder()
+        Candidate nonExistingCandidate = Candidate.builder()
                 .surname("Test")
                 .name("Test")
                 .middleName("Test")
@@ -124,6 +131,7 @@ class CandidateServiceTest extends IntegrationTestsDatabase {
                 .recommendationLetter(LocalDate.now())
                 .recruiter("Test recruiter")
                 .curator("Test curator")
+                .candidatePosition(candidatePositionService.getAllCandidatePositionById(100L))
                 .psychologicalTest(psychologyTestService.findTestStatusById(100L))
                 .build();
         int beforeAdding = candidateRepository.findAll().size();
@@ -134,7 +142,7 @@ class CandidateServiceTest extends IntegrationTestsDatabase {
 
     @Test
     void addNonValidCandidate() {
-       Candidate nonExistingCandidate = Candidate.builder()
+        Candidate nonExistingCandidate = Candidate.builder()
                 .surname("Test")
                 .middleName("Test")
                 .status(candidateStatusService.findStatusById(100L))
@@ -146,6 +154,15 @@ class CandidateServiceTest extends IntegrationTestsDatabase {
                 .curator("Test curator")
                 .psychologicalTest(psychologyTestService.findTestStatusById(100L))
                 .build();
-        assertThrows(ValidationException.class,() -> candidateService.addCandidate(nonExistingCandidate));
+        assertThrows(ValidationException.class, () -> candidateService.addCandidate(nonExistingCandidate));
+    }
+
+    @Test
+    void findAllCandidatesInProcess(){
+        assertEquals(9, candidateService.
+                findAllCandidatesInProcess(PageRequest
+                        .of(0, 11))
+                .getContent()
+                .size());
     }
 }
